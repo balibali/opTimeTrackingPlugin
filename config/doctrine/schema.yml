@@ -1,0 +1,43 @@
+options:
+  charset: utf8
+actAs: [Timestampable]
+
+TimeTrackingClient:
+  columns:
+    id:   { type: integer(4), primary: true, autoincrement: true }
+    name: { type: string, notnull: true }
+
+TimeTrackingProject:
+  columns:
+    id:        { type: integer(4), primary: true, autoincrement: true }
+    name:      { type: string, notnull: true }
+    client_id: { type: integer(4) }
+  relations:
+    TimeTrackingClient:
+      local:    client_id
+      onDelete: set null
+
+TimeTrackingTask:
+  columns:
+    id:         { type: integer(4), primary: true, autoincrement: true }
+    name:       { type: string, notnull: true }
+    project_id: { type: integer(4), notnull: true }
+  relations:
+    TimeTrackingProject:
+      local:    project_id
+      onDelete: cascade
+
+TimeTrackingLog:
+  columns:
+    id:          { type: integer(4), primary: true, autoincrement: true }
+    member_id:   { type: integer(4), notnull: true }
+    task_id:     { type: integer(4), notnull: true }
+    log_date:    { type: date }
+    duration:    { type: integer(4), notnull: true }
+    description: { type: string, notnull: true }
+  relations:
+    Member:
+      onDelete: cascade
+    TimeTrackingTask:
+      local:    task_id
+      onDelete: cascade
